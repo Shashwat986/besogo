@@ -8,6 +8,8 @@ besogo.makeEditor = function(sizeX, sizeY) {
 
         // Enumeration of editor tools/modes
         TOOLS = ['navOnly', // read-only navigate mode
+            'playWithoutUndo',
+            'none',
             'auto', // auto-mode: navigate or auto-play color
             'playB', // play black stone
             'playW', // play white stone
@@ -61,7 +63,8 @@ besogo.makeEditor = function(sizeX, sizeY) {
         promote: promote,
         demote: demote,
         getRoot: getRoot,
-        loadRoot: loadRoot // Loads new game state
+        loadRoot: loadRoot, // Loads new game state
+        playMove: playMove
     };
 
     // Returns the active tool
@@ -308,6 +311,9 @@ besogo.makeEditor = function(sizeX, sizeY) {
             case 'navOnly':
                 navigate(i, j, shiftKey);
                 break;
+            case 'playWithoutUndo':
+                playMove(i, j, 0, false);
+                break;
             case 'auto':
                 if (!navigate(i, j, shiftKey) && !shiftKey) { // Try to navigate to (i, j)
                     playMove(i, j, 0, ctrlKey); // Play auto-color move if navigate fails
@@ -356,6 +362,9 @@ besogo.makeEditor = function(sizeX, sizeY) {
                 break;
             case 'label':
                 setMarkup(i, j, label);
+                break;
+            case 'none':
+                // Do nothing
                 break;
         }
     }
@@ -500,7 +509,7 @@ besogo.makeEditor = function(sizeX, sizeY) {
     //  Data sent to listeners:
     //    tool: changed tool selection
     //    label: changed next label
-    //    coord: changed coordinate system 
+    //    coord: changed coordinate system
     //    variantStyle: changed variant style
     //    gameInfo: changed game info
     //    comment: changed comment in current node

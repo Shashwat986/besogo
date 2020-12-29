@@ -47,6 +47,9 @@ besogo.create = function(container, options) {
     if (options.realstones) { // Using realistic stones
         editor.REAL_STONES = true;
         editor.SHADOWS = options.shadows;
+    } else if (options.customstones) {
+        editor.CUSTOM_STONES = options.customstones;
+        editor.SHADOWS = (options.shadows && options.shadows !== 'auto');
     } else { // SVG stones
         editor.SHADOWS = (options.shadows && options.shadows !== 'auto');
     }
@@ -154,45 +157,46 @@ besogo.create = function(container, options) {
         setDimensions(container.clientWidth, container.clientHeight);
     }
 
+    // Sets dimensions with optional height param
+    function setDimensions(width, height) {
+        if (height && width > height) { // Landscape mode
+            container.style['flex-direction'] = 'row';
+            boardDiv.style.height = height + 'px';
+            boardDiv.style.width = height + 'px';
+            if (panelsDiv) {
+                panelsDiv.style.height = height + 'px';
+                panelsDiv.style.width = (width - height) + 'px';
+            }
+        } else { // Portrait mode (implied if height is missing)
+            container.style['flex-direction'] = 'column';
+            boardDiv.style.height = width + 'px';
+            boardDiv.style.width = width + 'px';
+            if (panelsDiv) {
+                if (height) { // Only set height if param present
+                    panelsDiv.style.height = (height - width) + 'px';
+                }
+                panelsDiv.style.width = width + 'px';
+            }
+        }
+    }
+
+    // Creates and adds divs to specified parent or container
+    function makeDiv(className, parent) {
+        var div = document.createElement("div");
+        if (className) {
+            div.className = className;
+        }
+        parent = parent || container;
+        parent.appendChild(div);
+        return div;
+    }
+
     return {
         editor: editor
     }
 
 }; // END function besogo.create
 
-// Sets dimensions with optional height param
-function setDimensions(width, height) {
-    if (height && width > height) { // Landscape mode
-        container.style['flex-direction'] = 'row';
-        boardDiv.style.height = height + 'px';
-        boardDiv.style.width = height + 'px';
-        if (panelsDiv) {
-            panelsDiv.style.height = height + 'px';
-            panelsDiv.style.width = (width - height) + 'px';
-        }
-    } else { // Portrait mode (implied if height is missing)
-        container.style['flex-direction'] = 'column';
-        boardDiv.style.height = width + 'px';
-        boardDiv.style.width = width + 'px';
-        if (panelsDiv) {
-            if (height) { // Only set height if param present
-                panelsDiv.style.height = (height - width) + 'px';
-            }
-            panelsDiv.style.width = width + 'px';
-        }
-    }
-}
-
-// Creates and adds divs to specified parent or container
-function makeDiv(className, parent) {
-    var div = document.createElement("div");
-    if (className) {
-        div.className = className;
-    }
-    parent = parent || container;
-    parent.appendChild(div);
-    return div;
-}
 
 // Parses size parameter from SGF format
 besogo.parseSize = function(input) {

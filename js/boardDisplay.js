@@ -309,6 +309,8 @@ besogo.makeBoardDisplay = function(container, editor) {
 
                     if (editor.REAL_STONES) { // Realistic stone
                         group.appendChild(besogo.realStone(x, y, color, randIndex[fromXY(i, j)]));
+                    } else if (editor.CUSTOM_STONES) {
+                        group.appendChild(besogo.realStone(x, y, color, editor.CUSTOM_STONES, true));
                     } else { // SVG stone
                         group.appendChild(besogo.svgStone(x, y, color));
                     }
