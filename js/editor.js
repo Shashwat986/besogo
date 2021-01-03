@@ -64,7 +64,8 @@ besogo.makeEditor = function(sizeX, sizeY) {
         demote: demote,
         getRoot: getRoot,
         loadRoot: loadRoot, // Loads new game state
-        playMove: playMove
+        playMove: playMove,
+        setMarkup: setMarkup
     };
 
     // Returns the active tool
